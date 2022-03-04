@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
+import {getTemplates} from '../lib/store';
 
 import Template from './Template';
 
@@ -9,7 +10,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 export function PureTemplateList({ loading, templates }) {
     const events = {};
-
     const LoadingRow = (
         <div className="loading-item">
             <span className="glow-checkbox" />
@@ -47,9 +47,9 @@ export function PureTemplateList({ loading, templates }) {
     // ];
     // const templatesInOrder = templates;
     return (
-        <div className="list-items">
+        <div className={"template"}>
             {templates.map(template => (
-                <Template key={template.id} template={template} {...events} />
+                <Template className={"template-item"} key={template.id} template={template} {...events} />
             ))}
         </div>
     );
@@ -70,10 +70,16 @@ PureTemplateList.defaultProps = {
     loading: false,
 };
 
-export function TemplateList() {
+export default function TemplateList() {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(getTemplates());        
+    }, [dispatch]);
+
+    const templatesData = useSelector(state => state.templates);
     // We're retrieving our state from the store
     // const tasks = useSelector(state => state.tasks);
-    const templates = useSelector(state => state.templates)
     // // We're defining an variable to handle dispatching the actions back to the store
     // // const dispatch = useDispatch();
     //
@@ -90,7 +96,8 @@ export function TemplateList() {
     // const filteredTemplates = templates;
     return (
         <PureTemplateList
-            templates={templates}
+            templates={templatesData.defaultTemplates}
+            loading={templatesData.loading}
             // onPinTask={task => pinTask(task)}
             // onArchiveTask={task => archiveTask(task)}
         />

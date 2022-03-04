@@ -1,7 +1,7 @@
 /* A simple redux store/actions/reducer implementation.
  * A true app would be more complex and separated into different files.
  */
-import { configureStore, createSlice } from '@reduxjs/toolkit';
+import { configureStore, createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 // Our new error field is configured here
     const AppStateSlice = createSlice({
@@ -17,9 +17,10 @@ import { configureStore, createSlice } from '@reduxjs/toolkit';
           },
 });
 
-const defaultTemplates = [
-    // fetch data from API here
-];
+export const getTemplates = createAsyncThunk('templates/getTemplates',
+    async() => {
+        return fetch('https://us-central1-casus-fe-task.cloudfunctions.net/templates').then((res) => res.json());
+})
 
 /*
  * The store is created here.
@@ -28,8 +29,27 @@ const defaultTemplates = [
  */
 const TemplatesSlice = createSlice({
     name: 'templates',
-    initialState: defaultTemplates,
+    initialState: {
+        defaultTemplates: [],
+        status: null,
+        loading: false,
+    },
     reducers: {},
+    extraReducers: {
+        [getTemplates.pending] : (state, action) => {
+            state.loading = true;
+            state.status = 'loading';
+        },
+        [getTemplates.fulfilled] : (state, {payload}) => {
+            state.defaultTemplates = payload;
+            state.loading = false;
+            state.status = 'success';
+        },
+        [getTemplates.rejected] : (state, action) => {
+            state.loading = false;
+            state.status = 'failed'
+        },
+    }
 });
 
 // The actions contained in the slice are exported for usage in our components

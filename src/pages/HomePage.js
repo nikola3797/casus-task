@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import TemplateList from '../components/TemplateList';
 
 
 export function HomePage({ error }) {
@@ -22,11 +23,7 @@ export function HomePage({ error }) {
                     <span className="title-wrapper">CASUS</span>
                 </h1>
             </nav>
-            <div className="wrapper-message">
-                <span className="icon-eye" />
-                <div className="title-message">This is Where all Begins!</div>
-                <div className="subtitle-message">Good Luck!!</div>
-            </div>
+           <TemplateList />
         </div>
     );
 }
